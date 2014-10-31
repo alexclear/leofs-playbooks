@@ -1,0 +1,28 @@
+---
+- name: add a leofs-1404 repo
+  template: src=leofs/leofs1404.list dest=/etc/apt/sources.list.d/leofs1404.list owner=root group=root mode=0644
+  notify: apt-get update
+
+- name: install libatomic_7.2d-1_amd64
+  apt: name=libatomic=7.2d-1 state=present force=yes
+
+- name: install erlang-custom
+  apt: name=erlang-custom state=present force=yes
+
+- name: install ncurses-dev
+  apt: name=ncurses-dev state=present
+
+- name: install cmake
+  apt: name=cmake state=present
+
+- name: install check
+  apt: name=check state=present force=yes
+
+- name: install g++
+  apt: name=g++ state=present
+
+- name: get leofs
+  git: repo=https://github.com/leo-project/leofs.git version=1.0.2 dest=/opt/leofs accept_hostkey=yes
+
+- name: make leofs
+  command: bash -c "export ERL_HOME=/usr/local/erlang/R16B03-1; export PATH=$PATH:$ERL_HOME/bin; cd /opt/leofs; make && make release" creates=/opt/leofs/package/leo_manager_0/bin/leo_manager

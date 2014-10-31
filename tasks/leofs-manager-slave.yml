@@ -1,0 +1,15 @@
+---
+- name: put vm.args
+  template: src=leofs/vm.args dest=/opt/leofs/package/leo_manager_{{ manager_no }}/etc/vm.args owner=root group=root mode=0644
+
+- name: put leo_manager.conf
+  template: src=leofs/leo_manager_slave.conf dest=/opt/leofs/package/leo_manager_1/etc/leo_manager.conf owner=root group=root mode=0644
+
+- name: ping a manager
+  shell: /opt/leofs/package/leo_manager_1/bin/leo_manager ping
+  ignore_errors: True
+  register: result
+
+- name: start the manager
+  command: /opt/leofs/package/leo_manager_1/bin/leo_manager start
+  when: result.stdout.find('not responding to pings') != -1

@@ -1,0 +1,15 @@
+---
+- name: put vm.args
+  template: src=leofs/vm.args dest=/opt/leofs/package/leo_storage/etc/vm.args owner=root group=root mode=0644
+
+- name: put leo_storage.conf
+  template: src=leofs/leo_storage.conf dest=/opt/leofs/package/leo_storage/etc/leo_storage.conf owner=root group=root mode=0644
+
+- name: ping a storage node
+  shell: /opt/leofs/package/leo_storage/bin/leo_storage ping
+  ignore_errors: True
+  register: result
+
+- name: start the storage
+  command: bash -c "ulimit -n 65535 && /opt/leofs/package/leo_storage/bin/leo_storage start"
+  when: result.stdout.find('not responding to pings') != -1

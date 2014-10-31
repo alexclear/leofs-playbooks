@@ -1,0 +1,16 @@
+---
+- name: put vm.args
+  template: src=leofs/vm.args dest=/opt/leofs/package/leo_gateway/etc/vm.args owner=root group=root mode=0644
+
+- name: put leo_gateway.conf
+  template: src=leofs/leo_gateway.conf dest=/opt/leofs/package/leo_gateway/etc/leo_gateway.conf owner=root group=root mode=0644
+
+- name: put leo_gateway w/PID file creation
+  template: src=leofs/leo_gateway dest=/opt/leofs/package/leo_gateway/bin/leo_gateway owner=root group=root mode=0755
+
+- name: put leo_gateway config file
+  template: src=leofs/leo_gateway.rb dest=/etc/eye/leo_gateway.rb owner=root group=root mode=0644
+
+- name: load config in eye
+  command: bash -c "source /usr/local/rvm/scripts/rvm && eye l /etc/eye/apps.eye"
+  sudo: yes
